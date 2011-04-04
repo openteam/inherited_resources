@@ -302,6 +302,17 @@ module InheritedResources
       def resource_params
         params[resource_request_name] || params[resource_instance_name] || {}
       end
+
+      # builds nested objects for given resource
+      def build_nested_objects(object)
+        if object.class.respond_to? :nested_attributes_options
+          object.class.nested_attributes_options.keys.each do | association |
+            object.send("build_#{association}") unless object.send(association)
+          end
+        end
+        object
+      end
+
   end
 end
 
